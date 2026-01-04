@@ -56,7 +56,7 @@ Then If
 
 The prior memory location/offset is obtained by combining the 13bits as defined above. In the original LZF algorithm P is an offset which is subtracted from the current memory position (P+1 as zero cannot an offset). This was modified for the screen compression routine as detail next.
 
-# Modifications
+## Modifications
 
 For the screen version of the compressor instead of reading the memory in a linear fashion the compressor follows the Spectrum screen layout as follows:
 
@@ -70,7 +70,7 @@ This resulted in much better compression (up to 20% for some screens) plus fulfi
 - Max length was capped at 256 to make the decompression code cleaner and faster. From testing there are limited times >256 is required. Second byte for length therefore maxes out at 246
 - `0xFF` is used as an end marker meaning the max offset or memory position is actually 7936 `%11110 11111111` to avoid issues with lengths >=9.
 
-# Parser Info
+## Parser Info
 
 Probably one of the most important parts of the compression code outside of the actual algorithm is how the data to be compressed is scanned and/or parsed. Different methods can results in much better or worse compression ratios.
 
