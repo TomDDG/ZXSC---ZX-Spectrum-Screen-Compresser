@@ -8,7 +8,7 @@ As part of developing some of my games on the ZX Spectrum I had a requirement fo
 - Allows for compression of cutouts/windows of the screen not just full screens
 - De-compression is visually pleasing i.e. doesn't show garbage on screen
 
-After much experimenting and research I ended up choosing LZF compression originally by Marc Lehmann, a part of the popular LZ77 algorithm family. Although it doesn't give the best compression, it is very fast even on a Spectrum, needs no working memory, utilising the already de-compressed data as a dictionary and has an inherent 8kb (13bit) offset which fits nicely as a Spectrum screen is 6912bytes long. For more info see Wikipedia (https://en.wikibooks.org/wiki/Data_Compression/Dictionary_compression#LZF)
+After much experimenting and research I ended up choosing LZF compression originally by Marc Lehmann, a part of the popular LZ77 algorithm family. Although it doesn't give the best compression, it is very fast even on a Spectrum, needs no working memory, utilising the already de-compressed data as a dictionary and has an inherent 8kb (13bit) offset which fits nicely as a Spectrum screen is 6912bytes long. For more info see [Wikipedia](https://en.wikibooks.org/wiki/Data_Compression/Dictionary_compression#LZF)
 
 Below are details on the algorithm including how it compresses the data, how the de-compression works, modifications to the standard I've made and how I built my compression code including the parser chosen to achieve maximum compression.
 
@@ -24,7 +24,7 @@ The LZF compressor scans from the current byte to see if there is a match in the
 
 - If the "string" of bytes it finds is more than 3 in length it stores a compressed version which will be either 2 or 3 from the list above depending on length. 3-8 use 2, 9+ uses 3
 - If not it stores just the byte (literal) and a control byte if required as defined by 1 above
-Initial bytes are always a control (000LLLLL) followed by a literal or literals, otherwise there would be nothing in the dictionary! Anyway a couple of simple examples:
+Initial bytes are always a control `000LLLLL` followed by a literal or literals, otherwise there would be nothing in the dictionary! Anyway a couple of simple examples:
 
 If we have 16 zeros in a row the compressor would store this in 5 bytes (plus an end marker). These bytes are as follows:
 
@@ -35,7 +35,7 @@ If we have 16 zeros in a row the compressor would store this in 5 bytes (plus an
 - `0x00` which combined with the previous 5 high bits gives an offset of 1 (0+1) so basically copy 15 0s from 1 position back
 - `0xff` end marker
 
-If we have "123456" then the compressor won't actually compress at all, in fact it would result in a file longer than the original at 8 bytes. This is because it won't find a match in the dictionary so it will just store the literals 123456 with a control byte (`%00000101`) in front and an end marker afterwards. If however we have "123456123456" we will start to see how the compression works. Starting with the same initial 7bytes (control byte followed by the string "123456") we would then get:
+If we have `123456` then the compressor won't actually compress at all, in fact it would result in a file longer than the original at 8 bytes. This is because it won't find a match in the dictionary so it will just store the literals 123456 with a control byte (`%00000101`) in front and an end marker afterwards. If however we have `123456123456` we will start to see how the compression works. Starting with the same initial 7bytes (control byte followed by the string `123456`) we would then get:
 
 - `0x80` (`%10000000`) - copy 6 bytes (4+2) from...
 - `0x05` (`%00000101`) - offset 6 (5+1) or go 6 back and copy 6 bytes
