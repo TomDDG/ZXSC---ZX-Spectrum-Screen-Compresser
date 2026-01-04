@@ -118,7 +118,7 @@ usage: zxsc input [options] <default normal lzf to stdout>
 ## Decompression z80 code
 
 Four versions of the decompression code are available. They all work slightly differently:
-- Standard LZF (49bytes long) - Linear data scan, simplest and therefore smallest code
+- [Standard LZF](./standardlzf.asm) (49bytes long) - Linear data scan, simplest and therefore smallest code
 - Full Screen LZF (80bytes long) - Screen scan version, addition of code to scan the screen as defined, fixed memory location
 - Static Cutout/Window LZF (92bytes long) - Windowed version of Screen scan, hard coded checks in the de-compressor to determine if at the edge of the window, fixed memory location
 - Moveable Cutout/Window LZF (151bytes long) - Moveable windowed version of Screen scan, can be any screen location. This makes the de-compression code much longer due to the variable nature of the edge checks required
