@@ -8,7 +8,7 @@ As part of developing some of my games on the ZX Spectrum I had a requirement fo
 - Allows for compression of cutouts/windows of the screen not just full screens
 - De-compression is visually pleasing i.e. doesn't show garbage on screen
 
-After much experimenting and research I ended up choosing LZF compression originally by Marc Lehmann, a part of the popular LZ77 algorithm family. Although it doesn't give the best compression, it is very fast even on a Spectrum, needs no working memory, utilising the already de-compressed data as a dictionary and has an inherent 8kb (13bit) offset which fits nicely as a Spectrum screen is 6912bytes long. For more info see [Wikipedia](https://en.wikibooks.org/wiki/Data_Compression/Dictionary_compression#LZF)
+After much experimenting and research I ended up choosing LZF compression originally by Marc Lehmann, a part of the popular LZ77 algorithm family. Although it doesn't give the best compression, it is very fast even on a Spectrum, needs no working memory, utilising the already de-compressed data as a dictionary and has an inherent 8kB (13bit) offset which fits nicely as a Spectrum screen is 6912bytes long. For more info see [Wikipedia](https://en.wikibooks.org/wiki/Data_Compression/Dictionary_compression#LZF)
 
 Below are details on the algorithm including how it compresses the data, how the de-compression works, modifications to the standard I've made and how I built my compression code including the parser chosen to achieve maximum compression.
 
@@ -94,3 +94,31 @@ Using the Cobra.scr test screen (6912bytes):
 - Initial cost calc = 2348bytes (0.8% saving over simple greedy)
 - Final improved cost calc = 2337bytes (1.3% saving over simple greedy)
 - and as a comparison Linear with same best case parser = 2969bytes
+
+## Compression Code
+
+You can download the compressor for Mac OS X or Windows 32 executables from the release folder. I've also included a test ZX Spectrum tape so you can see the decompression in action. Further below I've listed the z80 decompression assembler source code.
+
+The compression software is a single executable able to compress in both the standard/linear and screen scan versions. The screen version includes full screen, static window or moveable window defined by xstart, ystart, xsize & ysize. It produces the output as assembler defb statements so it can easily be incorporated into your code. You can also opt to include the decompression z80 assembler code in with this.
+
+Small update, added v3c which has fixed an issue when the compressor encounters a file it cannot compress resulting in it not creating the output. I also tidied up the debug output. v3d improved parser, v3e new backwards cost parser which increases compression by a few bytes and is much faster.
+
+Run-time options detailed below:
+```
+zxsc v3e (c) 2018/20 Tom Dalby
+usage: zxsc input [options] <default normal lzf to stdout>
+-s compress screen (non-linear screen scan)
+-w <XSTART YSTART XSIZE YSIZE> compress static screen cutout
+-m <XSTART YSTART XSIZE YSIZE> compress moveable screen cutout
+-o <filename> output to file
+-a add z80 de-compressor (default, screen or static/moveable cutout)
+-d show debugging info & suppress all other output
+```
+
+## Decompression z80 code
+
+Four versions of the decompression code are available. They all work slightly differently:
+- Standard LZF (49bytes long) - Linear data scan, simplest and therefore smallest code
+- Full Screen LZF (80bytes long) - Screen scan version, addition of code to scan the screen as defined, fixed memory location
+- Static Cutout/Window LZF (92bytes long) - Windowed version of Screen scan, hard coded checks in the de-compressor to determine if at the edge of the window, fixed memory location
+- Moveable Cutout/Window LZF (151bytes long) - Moveable windowed version of Screen scan, can be any screen location. This makes the de-compression code much longer due to the variable nature of the edge checks required
