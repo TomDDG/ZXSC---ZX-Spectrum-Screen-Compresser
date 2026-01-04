@@ -95,6 +95,16 @@ Using the Cobra.scr test screen (6912bytes):
 - Final improved cost calc = 2337bytes (1.3% saving over simple greedy)
 - and as a comparison Linear with same best case parser = 2969bytes
 
+## Examples
+
+he following is an example of the linear/normal LZF decompression running on a ZX Spectrum (slowed to 10%). As you can see the pixels are shown first followed by the attributes which, unless you blackout the screen first, is a messy reveal. Worth adding that, at 100%, the screen appears almost instantaneously.
+
+![Cobra Example Screen Show Normal LZF](./combra_lzf_slow.gif)
+
+The following is an example of the screen version of LZF on a real Spectrum (slowed to 10%). As you can see the screen attributes and pixels are shown at the same time resulting in a much nicer reveal as well as much better compression size. Again when running at 100% this is almost instantaneous.
+
+![Cobra Example Screen Show Normal LZF](./cobra_new_slow.gif)
+
 ## Compression Code
 
 You can download the compressor for Mac OS X or Windows 32 executables from the release folder. I've also included a test ZX Spectrum tape so you can see the decompression in action. Further below I've listed the z80 decompression assembler source code.
@@ -114,6 +124,10 @@ usage: zxsc input [options] <default normal lzf to stdout>
 -a add z80 de-compressor (default, screen or static/moveable cutout)
 -d show debugging info & suppress all other output
 ```
+
+- [zxsc Compressor v3c Mac OS X (x86)](./zxsc_macosx.zip)
+- [zxsc Compressor v3e Windows & Linux (x86)](./zxsc_win32.zip)
+- [Example Screen Decompression (.TAP)](./cobra_test.zip)
 
 ## Decompression z80 code
 
